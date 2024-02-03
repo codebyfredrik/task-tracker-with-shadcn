@@ -35,10 +35,10 @@ import {
 import type { Task, FilterStatus } from "@/lib/types";
 import {
   generateId,
-  getActiveTasks,
-  getCompletedTasks,
-  getFilteredTasks,
-} from "@/lib/taskUtils";
+  getActiveItems,
+  getCompletedItems,
+  getFilteredItems,
+} from "@/lib/itemsUtils";
 import { updateFilter } from "@/lib/filterUtils";
 
 export default function Home() {
@@ -112,12 +112,12 @@ export default function Home() {
     setFilter(value);
   };
 
-  const filteredAndReversedTasks = getFilteredTasks(tasks, filter).reverse();
+  const filteredAndReversedTasks = getFilteredItems(tasks, filter).reverse();
 
-  const completedTasks = getCompletedTasks(tasks);
+  const completedTasks = getCompletedItems(tasks);
   const hasCompletedTasks = completedTasks.length > 0;
 
-  const activeTasks = getActiveTasks(tasks);
+  const activeTasks = getActiveItems(tasks);
   const hasActiveTasks = activeTasks.length > 0;
 
   const taskCount = tasks.length;
