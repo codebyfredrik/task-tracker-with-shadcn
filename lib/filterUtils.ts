@@ -1,16 +1,24 @@
 import type { Task, FilterStatus } from "@/lib/types";
-import { getActiveTasks, getCompletedTasks } from "./taskUtils";
+import { getActiveItems, getCompletedItems } from "./itemsUtils";
 
-export function updateFilter(
-  nextTasks: Array<Task>,
+function filterHasNoItems<T>(
+  items: Array<T>,
+  currentFilter: FilterStatus,
+  filterCondition: FilterStatus,
+) {
+  return items.length === 0 && currentFilter === filterCondition;
+}
+
+export function updateFilter<T extends { completed: boolean }>(
+  nextItems: Array<T>,
   currentFilter: FilterStatus,
 ) {
-  const activeTasks = getActiveTasks(nextTasks);
-  const completedTasks = getCompletedTasks(nextTasks);
+  const activeItems = getActiveItems(nextItems);
+  const completedItems = getCompletedItems(nextItems);
 
   if (
-    (activeTasks.length === 0 && currentFilter === "active") ||
-    (completedTasks.length === 0 && currentFilter === "completed")
+    filterHasNoItems(activeItems, currentFilter, "active") ||
+    filterHasNoItems(completedItems, currentFilter, "completed")
   ) {
     return "all";
   }
