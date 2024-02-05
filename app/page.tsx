@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { stagger, useAnimate } from "framer-motion";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -46,6 +47,7 @@ export default function Home() {
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [filter, setFilter] = React.useState<FilterStatus>("all");
   const [deleteTaskId, setDeleteTaskId] = React.useState<string | null>(null);
+  const [ref, animate] = useAnimate();
 
   const handleSubmit: React.ComponentProps<"form">["onSubmit"] = (e) => {
     e.preventDefault();
@@ -64,6 +66,7 @@ export default function Home() {
     setTasks(nextTasks);
     setText("");
     setFilter("all");
+
     toast.success("Task has been created");
   };
 
@@ -80,13 +83,45 @@ export default function Home() {
 
     const task = nextTasks.find((task) => task.id === taskId);
 
-    if (task?.completed) {
-      toast.success("Task has been completed");
-    } else {
-      toast.info("Task has been marked as active");
-    }
-
     setTasks(nextTasks);
+
+    // 🟢 If every item has been checked...
+    if (nextTasks.every((task) => task.completed)) {
+      const reversedTasks = [...tasks].reverse();
+      const lastCompletedTask = reversedTasks.findIndex(
+        (task) => !task.completed,
+      );
+      const random = Math.random();
+
+      if (random < 1 / 3) {
+        animate(
+          ".checkbox",
+          { scale: [1, 1.25, 1] },
+          {
+            duration: 0.35,
+            delay: stagger(0.075, { from: lastCompletedTask }),
+          },
+        );
+      } else if (random < 2 / 3) {
+        animate(
+          ".checkbox",
+          { x: [0, 2, -2, 0] },
+          {
+            duration: 0.4,
+            delay: stagger(0.1, { from: lastCompletedTask }),
+          },
+        );
+      } else {
+        animate(
+          ".checkbox",
+          { rotate: [0, 10, -10, 0] },
+          {
+            duration: 0.5,
+            delay: stagger(0.1, { from: lastCompletedTask }),
+          },
+        );
+      }
+    }
 
     const newFilter = updateFilter(nextTasks, filter);
     setFilter(newFilter);
@@ -180,21 +215,22 @@ export default function Home() {
           </form>
           <div className="mt-6">
             {filteredAndReversedTasks.length ? (
-              <ul className="space-y-4">
+              <ul ref={ref} className="space-y-4">
                 {filteredAndReversedTasks.map((task) => (
                   <li key={task.id}>
                     <Card
-                      className={`flex justify-between p-4 hover:bg-gray-50 ${
+                      className={`flex justify-between p-5 hover:bg-gray-50 ${
                         task.completed ? "bg-gray-100" : ""
                       }`}
                     >
-                      <div className="flex items-center space-x-6 ">
+                      <div className="flex items-center space-x-6">
                         <Checkbox
                           id={task.id}
                           checked={task.completed}
                           onCheckedChange={() =>
                             handleTaskCompletedToggle(task.id)
                           }
+                          className="checkbox"
                         />
                         <label
                           htmlFor={task.id}
