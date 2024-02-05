@@ -123,8 +123,8 @@ export default function Home() {
       }
     }
 
-    const newFilter = updateFilter(nextTasks, filter);
-    setFilter(newFilter);
+    const nextFilter = updateFilter(nextTasks, filter);
+    setFilter(nextFilter);
   };
 
   const handleTaskDelete = (taskId?: string) => {
@@ -134,13 +134,13 @@ export default function Home() {
 
     const nextTasks = [...tasks].filter((task) => task.id !== idToDelete);
 
-    toast.success("Task has been deleted");
-
     setTasks(nextTasks);
     setDeleteTaskId(null);
 
-    const newFilter = updateFilter(nextTasks, filter);
-    setFilter(newFilter);
+    const nextFilter = updateFilter(nextTasks, filter);
+    setFilter(nextFilter);
+
+    toast.success("Task has been deleted");
   };
 
   const handleFilterChange = (value: FilterStatus) => {
