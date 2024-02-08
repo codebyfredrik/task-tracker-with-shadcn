@@ -9,6 +9,10 @@ Task Tracker is a dynamic, user-friendly web application built with React and Ty
 - **Animations**: Enjoy a satisfying user experience with animations when tasks are completed.
 - **Notifications**: Get instant feedback with toast notifications when tasks are created or deleted.
 
+## 🎮 Demo
+
+Check out the live demo [here](https://task-tracker-two-green.vercel.app/).
+
 ## 🛠️ Tech Stack
 
 - **React**: For building the user interface.
