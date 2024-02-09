@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { stagger, useAnimate } from "framer-motion";
+import { stagger, useAnimate, motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -216,53 +216,69 @@ export default function Home() {
           <div className="mt-6">
             {filteredAndReversedTasks.length ? (
               <ul ref={ref} className="space-y-4">
-                {filteredAndReversedTasks.map((task) => (
-                  <li key={task.id}>
-                    <Card
-                      className={`flex justify-between p-5 hover:bg-gray-50 ${
-                        task.completed ? "bg-gray-100" : ""
-                      }`}
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {filteredAndReversedTasks.map((task) => (
+                    <motion.li
+                      key={task.id}
+                      layout
+                      initial={{ scale: 0.75, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.75, opacity: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     >
-                      <div className="flex items-center space-x-6">
-                        <Checkbox
-                          id={task.id}
-                          checked={task.completed}
-                          onCheckedChange={() =>
-                            handleTaskCompletedToggle(task.id)
-                          }
-                          className="checkbox"
-                        />
-                        <label
-                          htmlFor={task.id}
-                          className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
-                            task.completed ? "line-through" : ""
-                          }`}
-                        >
-                          {task.name}
-                        </label>
-                      </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                      <Card
+                        className={`flex justify-between p-5 hover:bg-gray-50 ${
+                          task.completed ? "bg-gray-100" : ""
+                        }`}
+                      >
+                        <div className="flex items-center space-x-6">
+                          <Checkbox
+                            id={task.id}
+                            checked={task.completed}
+                            onCheckedChange={() =>
+                              handleTaskCompletedToggle(task.id)
+                            }
+                            className="checkbox"
+                          />
+                          <label
+                            htmlFor={task.id}
+                            className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                              task.completed ? "line-through" : ""
+                            }`}
                           >
-                            <DotsHorizontalIcon className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[160px]">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setDeleteTaskId(task.id)}
+                            {task.name}
+                          </label>
+                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                            >
+                              <DotsHorizontalIcon className="h-4 w-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="w-[160px]"
                           >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </Card>
-                  </li>
-                ))}
+                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setDeleteTaskId(task.id)}
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </Card>
+                    </motion.li>
+                  ))}
+                </AnimatePresence>
               </ul>
             ) : (
               <>
