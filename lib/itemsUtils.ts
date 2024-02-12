@@ -21,6 +21,21 @@ export function getFilteredItems<T extends { completed: boolean }>(
   });
 }
 
+export function getFilteredItem<T extends { completed: boolean }>(
+  item: T,
+  filterText: FilterStatus,
+): boolean {
+  switch (filterText) {
+    case "completed":
+      return item.completed;
+    case "active":
+      return !item.completed;
+    case "all":
+    default:
+      return true;
+  }
+}
+
 export function getCompletedItems<T extends { completed: boolean }>(
   items: Array<T>,
 ) {
